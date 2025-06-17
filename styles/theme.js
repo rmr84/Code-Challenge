@@ -1,0 +1,150 @@
+export const theme = {
+    colors: {
+      beige: {
+        50: "#FAF9F6",
+        100: "#F5F3EB",
+        200: "#ECE8DD",
+        300: "#E2DCCD",
+        400: "#D8D1BF",
+        500: "#CEC5B0",
+        600: "#B6AD9A",
+        700: "#9E9684",
+        800: "#877E6F",
+        900: "#6F675B"
+      },
+      blue: {
+        50: "#F6FAFB",
+        100: "#E2F0F4",
+        200: "#CCE3EA",
+        300: "#B3D5E0",
+        400: "#9BC8D6",
+        500: "#84BACD",
+        600: "#6FA5B5",
+        700: "#5A8F9D",
+        800: "#477983",
+        900: "#3A646F"
+      },
+      brown: {
+        50: "#FBF8F6",
+        100: "#EFE7E2",
+        200: "#DDD1C8",
+        300: "#C9B9AC",
+        400: "#B5A090",
+        500: "#A18876",
+        600: "#8C7061",
+        700: "#775C4F",
+        800: "#634B41",
+        900: "#4F3B33"
+      },
+      error: "#D9534F",
+      success: "#5CB85C",
+      text: "#3A3A3A",
+      background: "#FAF9F6"
+    },
+    fonts: {
+      header: {
+        fontFamily: "Georgia",
+        fontSize: 28,
+        color: "#3A3A3A",
+        fontWeight: "bold",
+        textAlign: "center"
+      },
+      subHeader: {
+        fontFamily: "Georgia",
+        fontSize: 20,
+        color: "#3A3A3A",
+        fontWeight: "600"
+      },
+      body: {
+        fontFamily: "System",
+        fontSize: 16,
+        color: "#3A3A3A",
+        lineHeight: 24
+      },
+      caption: {
+        fontFamily: "System",
+        fontSize: 14,
+        color: "#6F675B"
+      },
+      button: {
+        fontFamily: "System",
+        fontSize: 18,
+        fontWeight: "500",
+        color: "#FFFFFF"
+      },
+      error: {
+        fontFamily: "System",
+        fontSize: 16,
+        color: "#D9534F"
+      },
+      success: {
+        fontFamily: "System",
+        fontSize: 16,
+        color: "#5CB85C"
+      }
+    },
+    styles: {
+      container: {
+        backgroundColor: "#FAF9F6",
+        flex: 1,
+        padding: 24
+      },
+      card: {
+        backgroundColor: "#FFFFFF",
+        borderRadius: 12,
+        padding: 20,
+        marginVertical: 10,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3
+      },
+      input: {
+        borderColor: "#DDD1C8",
+        borderWidth: 1,
+        borderRadius: 8,
+        padding: 12,
+        fontSize: 16,
+        fontFamily: "System",
+        color: "#3A3A3A",
+        backgroundColor: "#FFFFFF",
+        marginTop: 8
+      },
+      buttonPrimary: {
+        backgroundColor: "#84BACD",
+        paddingVertical: 14,
+        paddingHorizontal: 24,
+        borderRadius: 8,
+        alignItems: "center",
+        marginTop: 12
+      },
+      buttonSecondary: {
+        backgroundColor: "#B6AD9A",
+        paddingVertical: 14,
+        paddingHorizontal: 24,
+        borderRadius: 8,
+        alignItems: "center",
+        marginTop: 12
+      },
+      logo: {
+        width: 40,
+        height: 40,
+        resizeMode: "contain"
+      },
+      centeredText: {
+        textAlign: "center"
+      },
+      row: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between"
+      },
+      image: {
+        width: "100%",
+        height: 200,
+        borderRadius: 10
+      }
+    }
+  };
+  
