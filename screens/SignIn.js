@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
-  TouchableOpacity,
   ScrollView,
-  Platform,
+  TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
@@ -14,6 +13,8 @@ import { auth } from "../utils/firebase";
 import { useUsers } from "../context/UsersContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { theme } from "../styles/theme";
+import { components } from "../styles/components";
+import { Read } from "react-native-vector-icons";
 export const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,8 +38,7 @@ export const SignIn = () => {
       if (!firebaseUser.emailVerified) {
         setError("Please verify your email to login.");
       } else {
-      //  const response = await getUserAPI({ fb_token: firebaseUser.uid });
-      //  TODO: setUser(response.data); need a way to store users and their journal entries. 
+        // TODO: Fetch user data and set it
         navigation.navigate("Dashboard");
       }
     } catch (error) {
@@ -55,6 +55,9 @@ export const SignIn = () => {
         case "auth/wrong-password":
           setError("Incorrect password. Please try again.");
           break;
+        case "auth/invalid-credential":
+          setError("User not found. Please sign up.");
+          break;
         default:
           setError(error.message);
           break;
@@ -64,96 +67,80 @@ export const SignIn = () => {
     setIsLoading(false);
   };
 
- 
   return (
-    <ScrollView >
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View style={theme.styles.container}>
-        <Text style={theme.fonts.headerText}>WELCOME BACK!</Text>
-        <Text style={theme.fonts.inputLabelText}>Email address</Text>
+        <Text style={[theme.fonts.header, theme.styles.centeredText]}>
+          Sign In
+        </Text>
+
+        <Text style={[theme.fonts.body, styles.label]}>Email address</Text>
         <TextInput
           style={theme.styles.input}
           value={email}
-          mode={"outlined"}
+          mode="outlined"
           onChangeText={setEmail}
-          keyboardType={"email-address"}
-          autoComplete={"email"}
-          autoCapitalize={"none"}
+          keyboardType="email-address"
+          autoComplete="email"
+          autoCapitalize="none"
         />
-        <Text style={theme.fonts.inputLabelText}>Password</Text>
+
+        <Text style={[theme.fonts.body, styles.label]}>Password</Text>
         <TextInput
           style={theme.styles.input}
           value={password}
-          mode={"outlined"}
+          mode="outlined"
           onChangeText={setPassword}
           secureTextEntry
-          autoComplete={"new-password"}
+          autoComplete="password"
         />
+
         <TouchableOpacity
           style={styles.forgotPasswordContainer}
           onPress={() => navigation.navigate("ForgotPassword")}
         >
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+          <Text style={[theme.fonts.caption, styles.forgotPasswordText]}>
+            Forgot Password?
+          </Text>
         </TouchableOpacity>
-        {error && <Text style={theme.fonts.errorText}>{error}</Text>}
 
-        <View style={styles.bottomContainer}>
-          <TouchableOpacity onPress={handleSignIn}>
-            <Button
-              mode={"contained"}
-              loading={isLoading}
-              style={[components.button, theme.styles.continue]}
-              labelStyle={theme.fonts.buttonText}
-            >
-              Continue
-            </Button>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-            <Button
-              mode={"contained"}
-              style={[components.button, theme.styles.back]}
-              labelStyle={theme.fonts.buttonText}
-            >
-              Back
-            </Button>
-          </TouchableOpacity>
-        </View>
+        {error ? (
+          <Text style={[theme.fonts.error, styles.errorText]}>{error}</Text>
+        ) : null}
+
+        <TouchableOpacity onPress={handleSignIn}>
+          <Button
+            mode={"contained"}
+            loading={isLoading}
+            style={[components.button, theme.styles.buttonPrimary]}
+            labelStyle={theme.fonts.buttonText}
+          >
+            Continue
+          </Button>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  bottomContainer: {
-    backgroundColor: theme.colors.background,
-    flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "end",
-    paddingTop: 100,
-    padding: 20,
+  header: {
+    marginTop: 75,
   },
-  logo: {
-    width: 40,
-    height: 40,
-    marginHorizontal: 10,
-  },
-  logoContainer: {
-    flexDirection: "row",
-    marginTop: 20,
-  },
+
   label: {
-    fontFamily: "eurof55",
-    fontSize: 18,
-    fontWeight: 500,
-    width: "100%",
-    marginTop: 25,
+    marginTop: 20,
+    marginBottom: 4,
+  },
+  bottomContainer: {
+    marginTop: 40,
+    gap: 16,
   },
   forgotPasswordContainer: {
-    alignSelf: "flex-start",
-    marginTop: 20,
+    marginTop: 12,
+    alignSelf: "flex-end",
   },
   forgotPasswordText: {
-    fontFamily: "eurof55",
-    fontSize: 18,
-    color: "#282646",
+    color: theme.colors.brown[700],
   },
 });
