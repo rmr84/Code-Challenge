@@ -15,7 +15,10 @@
     "react-native": "0.79.3",
     "firebase": "^10.9.0",
     "react-native-paper": "^5.12.3",
-    "@react-native-async-storage/async-storage": "1.21.0"
+    "@react-native-async-storage/async-storage": "1.21.0",
+    "@react-navigation/core": "^6.4.16",
+    "@react-navigation/native": "^6.1.17",
+    "@react-navigation/stack": "^6.3.29"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
