@@ -3,7 +3,7 @@ import { auth } from "../utils/firebase";
 import { useNavigation } from "@react-navigation/native";
 import { useUsers } from "../context/UsersContext";
 
-export default function Authentication({ currentScreen }) {
+export default function Authentication() {
   const { user, setUser } = useUsers();
   const navigation = useNavigation();
 
@@ -20,5 +20,5 @@ export default function Authentication({ currentScreen }) {
         navigation.navigate("SignIn");
       }
     });
-  }, [navigation, currentScreen]);
+  }, [navigation]);
 }
