@@ -104,7 +104,6 @@ export const theme = {
         borderColor: "#DDD1C8",
         borderWidth: 1,
         borderRadius: 8,
-        padding: 12,
         fontSize: 16,
         fontFamily: "System",
         color: "#3A3A3A",
@@ -133,7 +132,8 @@ export const theme = {
         resizeMode: "contain"
       },
       centeredText: {
-        textAlign: "center"
+        textAlign: "center",
+        marginTop: 75
       },
       row: {
         flexDirection: "row",
