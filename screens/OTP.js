@@ -71,13 +71,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  label: {
-    fontFamily: "eurof55",
-    fontSize: 18,
-    fontWeight: 500,
-    width: "100%",
-    marginTop: 25,
-  },
 
   noEmail: {
     marginTop: 15,
