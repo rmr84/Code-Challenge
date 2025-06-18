@@ -1,6 +1,16 @@
 export const openers = [
-    "Every day's story starts here.",
-    "Catch your thoughts before they fly away.",
-    "Ready to spill the beans?",
-    "Pause. Reflect. Write.",
-]
+  "Every day's story starts here.",
+  "Catch your thoughts before they fly away.",
+  "Ready to spill the beans?",
+  "Pause. Reflect. Write.",
+];
+
+export const weekDays = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
