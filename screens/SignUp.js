@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-//import { createUserAPI } from "../utils/api";
+import { createUserAPI } from "../utils/api";
 import { TextInput, Button } from "react-native-paper";
 import { theme } from "../styles/theme";
 import { useState } from "react";
@@ -50,20 +50,16 @@ export const SignUp = () => {
       );
       await sendEmailVerification(credential.user);
 
-      /*  const response = await createUserAPI({
-      TODO: Set up api 
-        fb_token: credential.user.uid,
-        name,
+      const response = await createUserAPI({
+        token: credential.user.uid,
         email,
-       
-      }); */
-
-      // if (response.status === 200) { TODO: Api
-      navigation.navigate("OTP", { credential: credential.user });
-      setError("");
-      // } else {
-      //   setError("Failed to create user");
-      // }
+      });
+      if (response.status === 200) {
+        navigation.navigate("OTP", { credential: credential.user });
+        setError("");
+      } else {
+        setError("Failed to create user");
+      }
     } catch (error) {
       console.error(error.message);
       if (error.code === "auth/email-already-in-use") {
