@@ -26,7 +26,7 @@ export const Journal = () => {
   const handleSaveEntry = () => {
     if (isLoading) return;
 
-    if (!newEntryTitle.length > 0 || !newEntryText.length > 0) {
+    if (newEntryTitle.length === 0 || newEntryText.length === 0) {
       setError("Please enter a title and some content.");
       return;
     }
@@ -88,7 +88,8 @@ export const Journal = () => {
         setIsLoading(false);
       });
   };
-
+  const formatMoodValue = (val) =>
+    typeof val === "number" ? val.toFixed(2) : "N/A";
   return (
     <>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -124,27 +125,74 @@ export const Journal = () => {
                 No journal entries yet. Start writing now!
               </Text>
             ) : (
-              entries?.map((entry) => (
-                <TouchableOpacity
-                  key={entry._id}
-                  onPress={() => {
-                    setEditingEntry(entry);
-                    setNewEntryTitle(entry.title);
-                    setNewEntryText(entry.body);
-                    setIsModalVisible(true);
-                  }}
-                >
-                  <Card style={styles.card}>
-                    <Card.Title
-                      title={entry.title}
-                      titleStyle={theme.styles.cardTitle}
-                    />
-                    <Card.Content>
-                      <Text style={theme.fonts.body}>{entry.body}</Text>
-                    </Card.Content>
-                  </Card>
-                </TouchableOpacity>
-              ))
+              entries?.map((entry) => {
+                const created = new Date(entry.createdAt);
+                const updated = new Date(entry.updatedAt);
+                const newerDate = updated > created ? updated : created;
+
+                const formattedDate = newerDate.toLocaleDateString();
+
+                return (
+                  <TouchableOpacity
+                    key={entry._id}
+                    onPress={() => {
+                      setEditingEntry(entry);
+                      setNewEntryTitle(entry.title);
+                      setNewEntryText(entry.body);
+                      setIsModalVisible(true);
+                    }}
+                  >
+                    <Card style={styles.card}>
+                      <Card.Title
+                        title={entry.title}
+                        titleStyle={theme.styles.cardTitle}
+                        right={() => (
+                          <Text
+                            style={{
+                              marginRight: 12,
+                              fontSize: 12,
+                              color: theme.colors.brown[700],
+                              alignSelf: "center",
+                            }}
+                          >
+                            {formattedDate}
+                          </Text>
+                        )}
+                      />
+                      <Card.Content>
+                        <Text style={theme.fonts.body}>{entry.body}</Text>
+                        {entry.mood && (
+                          <View style={styles.moodContainer}>
+                            {Object.entries(entry.mood).map(([key, val]) => {
+                              const value = typeof val === "number" ? val : 0;
+                              const normalized = Math.min(value / 100, 1);
+
+                              const bgColor = `rgba(132, 186, 205, ${
+                                normalized * 0.85
+                              })`;
+
+                              return (
+                                <View
+                                  key={key}
+                                  style={[
+                                    styles.moodBadge,
+                                    { backgroundColor: bgColor },
+                                  ]}
+                                >
+                                  <Text style={styles.moodText}>
+                                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                                    : {Math.round(value)}%
+                                  </Text>
+                                </View>
+                              );
+                            })}
+                          </View>
+                        )}
+                      </Card.Content>
+                    </Card>
+                  </TouchableOpacity>
+                );
+              })
             )}
           </View>
         </View>
@@ -285,5 +333,26 @@ const styles = StyleSheet.create({
   deleteIcon: {
     width: 24,
     height: 24,
+  },
+
+  moodContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 8,
+    gap: 6,
+  },
+
+  moodBadge: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    marginRight: 6,
+    marginBottom: 6,
+  },
+
+  moodText: {
+    fontSize: 12,
+    color: "#004d40",
+    fontWeight: "600",
   },
 });
