@@ -9,6 +9,7 @@ import { ForgotPassword } from "../screens/ForgotPassword";
 import { BottomNavigation } from "./BottomNavigation";
 import Authentication from "./Authentication";
 import { Journal } from "../screens/Journal";
+import { Settings } from "../screens/Settings";
 const { Navigator, Screen } = createStackNavigator();
 export default function Navigation() {
   const [currentScreen, setCurrentScreen] = useState("Dashboard");
@@ -30,9 +31,22 @@ export default function Navigation() {
         <Screen name={"SignIn"} component={SignIn} />
         <Screen name={"SignUp"} component={SignUp} />
         <Screen name={"OTP"} component={OTP} />
-        <Screen name={"Dashboard"} component={Dashboard} />
+        <Screen
+          name="Dashboard"
+          component={Dashboard}
+          options={{ gestureEnabled: false }}
+        />
         <Screen name={"ForgotPassword"} component={ForgotPassword} />
-        <Screen name={"Journal"} component={Journal} />
+        <Screen
+          name={"Journal"}
+          component={Journal}
+          options={{ gestureEnabled: false }}
+        />
+        <Screen
+          name={"Settings"}
+          component={Settings}
+          options={{ gestureEnabled: false }}
+        />
       </Navigator>
       {!hideBottomNavScreens.includes(currentScreen) && (
         <BottomNavigation currentScreen={currentScreen} />
