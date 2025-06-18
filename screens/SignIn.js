@@ -13,8 +13,7 @@ import { auth } from "../utils/firebase";
 import { useUsers } from "../context/UsersContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { theme } from "../styles/theme";
-import { components } from "../styles/components";
-import { Read } from "react-native-vector-icons";
+import { AnimatedRotatingText } from "../styles/AnimatedRotatingText";
 export const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,7 +46,7 @@ export const SignIn = () => {
           setError("Please enter a valid email address.");
           break;
         case "auth/user-not-found":
-          setError("User not found. Please sign up.");
+          setError("User not found.");
           break;
         case "auth/missing-password":
           setError("Please enter a password.");
@@ -56,7 +55,7 @@ export const SignIn = () => {
           setError("Incorrect password. Please try again.");
           break;
         case "auth/invalid-credential":
-          setError("User not found. Please sign up.");
+          setError("User not found.");
           break;
         default:
           setError(error.message);
@@ -70,10 +69,13 @@ export const SignIn = () => {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View style={theme.styles.container}>
-        <Text style={[theme.fonts.header, theme.styles.centeredText]}>
+        <Text
+          style={[theme.fonts.header, theme.styles.centeredText, styles.row]}
+        >
           Sign In
         </Text>
 
+        <AnimatedRotatingText />
         <Text style={[theme.fonts.body, styles.label]}>Email address</Text>
         <TextInput
           style={theme.styles.input}
@@ -104,20 +106,28 @@ export const SignIn = () => {
           </Text>
         </TouchableOpacity>
 
-        {error ? (
+        {error && (
           <Text style={[theme.fonts.error, styles.errorText]}>{error}</Text>
-        ) : null}
+        )}
 
         <TouchableOpacity onPress={handleSignIn}>
           <Button
             mode={"contained"}
             loading={isLoading}
-            style={[components.button, theme.styles.buttonPrimary]}
-            labelStyle={theme.fonts.buttonText}
+            style={theme.styles.buttonPrimary}
+            labelStyle={theme.fonts.button}
           >
             Continue
           </Button>
         </TouchableOpacity>
+        <View style={styles.accountRow}>
+          <Text style={theme.fonts.caption}>Don’t have an account? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+            <Text style={[theme.fonts.caption, styles.signupLink]}>
+              Sign Up →
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
@@ -140,6 +150,18 @@ const styles = StyleSheet.create({
     marginTop: 12,
     alignSelf: "flex-end",
   },
+
+  accountRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 20,
+    alignSelf: "flex-start",
+  },
+  signupLink: {
+    color: theme.colors.blue[700],
+    fontWeight: "600",
+  },
+
   forgotPasswordText: {
     color: theme.colors.brown[700],
   },
