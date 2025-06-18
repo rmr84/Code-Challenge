@@ -54,7 +54,7 @@ export const theme = {
       fontSize: 20,
       color: "#3A3A3A",
       fontWeight: "600",
-      marginTop: 15
+      marginTop: 15,
     },
     body: {
       fontFamily: "System",
@@ -119,7 +119,7 @@ export const theme = {
       borderRadius: 8,
       alignItems: "center",
       marginTop: 25,
-      fontSize: 25
+      fontSize: 25,
     },
     buttonSecondary: {
       backgroundColor: "#B6AD9A",
@@ -148,6 +148,5 @@ export const theme = {
       height: 200,
       borderRadius: 10,
     },
-    
   },
 };
