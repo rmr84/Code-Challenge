@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { TextInput, Button, Card } from "react-native-paper";
 import { theme } from "../styles/theme";
-import { createEntryAPI } from "../utils/api";
+import { createEntryAPI, updateEntryAPI } from "../utils/api";
 import { useUsers } from "../context/UsersContext";
 import { useEntries } from "../context/EntriesContext";
 export const Journal = () => {
@@ -18,10 +18,11 @@ export const Journal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [error, setError] = useState("");
+  const [editingEntry, setEditingEntry] = useState(null);
   const { user } = useUsers();
   const { entries, setEntries } = useEntries();
 
-  const handleAddEntry = () => {
+  const handleSaveEntry = () => {
     if (isLoading) return;
 
     if (!newEntryTitle.length > 0 || !newEntryText.length > 0) {
@@ -31,29 +32,40 @@ export const Journal = () => {
 
     setIsLoading(true);
 
-    const newEntry = {
+    const entry = {
       title: newEntryTitle,
       body: newEntryText,
       userId: user._id,
     };
 
-    createEntryAPI(newEntry)
+    const request = editingEntry
+      ? updateEntryAPI(editingEntry._id, entry)
+      : createEntryAPI(entry);
+
+    request
       .then((response) => {
         if (response?.data) {
-          setEntries([response.data, ...entries]);
+          if (editingEntry) {
+            setEntries((prev) =>
+              prev.map((e) => (e._id === editingEntry._id ? response.data : e))
+            );
+          } else {
+            setEntries((prev) => [response.data, ...prev]);
+          }
           setNewEntryText("");
           setNewEntryTitle("");
+          setEditingEntry(null);
           setIsModalVisible(false);
         } else {
-          console.error("No data returned from createEntryAPI");
+          console.error("No data returned");
         }
       })
       .catch((err) => {
-        console.error("Error creating journal entry:", err);
+        console.error("Error saving journal entry:", err);
       })
       .finally(() => {
-        setError("");
         setIsLoading(false);
+        setError("");
       });
   };
 
@@ -65,7 +77,14 @@ export const Journal = () => {
             My Journal
           </Text>
 
-          <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+          <TouchableOpacity
+            onPress={() => {
+              setEditingEntry(null);
+              setIsModalVisible(true);
+              setNewEntryText("");
+              setNewEntryTitle("");
+            }}
+          >
             <Button
               mode={"contained"}
               loading={isLoading}
@@ -81,15 +100,24 @@ export const Journal = () => {
               <Text style={theme.fonts.body}>No journal entries yet.</Text>
             ) : (
               entries?.map((entry) => (
-                <Card key={entry._id} style={styles.card}>
-                  <Card.Title
-                    title={entry.title}
-                    titleStyle={theme.styles.cardTitle}
-                  />
-                  <Card.Content>
-                    <Text style={theme.fonts.body}>{entry.body}</Text>
-                  </Card.Content>
-                </Card>
+                <TouchableOpacity
+                  onPress={() => {
+                    setEditingEntry(entry);
+                    setNewEntryTitle(entry.title);
+                    setNewEntryText(entry.body);
+                    setIsModalVisible(true);
+                  }}
+                >
+                  <Card key={entry._id} style={styles.card}>
+                    <Card.Title
+                      title={entry.title}
+                      titleStyle={theme.styles.cardTitle}
+                    />
+                    <Card.Content>
+                      <Text style={theme.fonts.body}>{entry.body}</Text>
+                    </Card.Content>
+                  </Card>
+                </TouchableOpacity>
               ))
             )}
           </View>
@@ -104,7 +132,7 @@ export const Journal = () => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={[theme.fonts.header, styles.modalHeader]}>
-              New Entry
+              {editingEntry ? "Edit Entry" : "New Entry"}
             </Text>
             <Text style={[theme.fonts.body, styles.label]}>Title</Text>
             <TextInput
@@ -124,7 +152,7 @@ export const Journal = () => {
             />
 
             <View style={styles.modalButtons}>
-              <TouchableOpacity onPress={handleAddEntry}>
+              <TouchableOpacity onPress={handleSaveEntry}>
                 <Button
                   mode={"contained"}
                   loading={isLoading}

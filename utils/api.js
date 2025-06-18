@@ -43,3 +43,15 @@ export const getEntriesAPI = async (params) => {
       console.error(JSON.stringify(error));
     });
 };
+
+export const updateEntryAPI = async (id, data) => {
+  return await axios
+    .patch(`http://localhost:3000/api/entries/${id}`, data)
+    .then((response) => response)
+    .catch((error) => {
+      console.error(
+        "Update entry error:",
+        error?.response?.data || error.message
+      );
+    });
+};
