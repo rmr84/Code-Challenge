@@ -12,6 +12,7 @@
       "simulator": true
     },
     "env": {
+      "API": "http://ocalhost:3000/api",
       "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyD1wSdot_i2yFjuxqAAi--1Ue82_aPUqZ8",
       "EXPO_PUBLIC_FIREBASE_APP_ID": "1:36262757672:web:a2204a7be91b4f38343c1d",
       "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN": "code-challenge-journal.firebaseapp.com",
