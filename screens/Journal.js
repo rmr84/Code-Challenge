@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,10 +6,11 @@ import {
   TouchableOpacity,
   Modal,
   StyleSheet,
+  Image,
 } from "react-native";
 import { TextInput, Button, Card } from "react-native-paper";
 import { theme } from "../styles/theme";
-import { createEntryAPI, updateEntryAPI } from "../utils/api";
+import { createEntryAPI, updateEntryAPI, deleteEntryAPI } from "../utils/api";
 import { useUsers } from "../context/UsersContext";
 import { useEntries } from "../context/EntriesContext";
 export const Journal = () => {
@@ -69,6 +70,25 @@ export const Journal = () => {
       });
   };
 
+  const handleDeleteEntry = () => {
+    if (!editingEntry) return;
+    setIsLoading(true);
+    deleteEntryAPI(editingEntry._id)
+      .then(() => {
+        setEntries((prev) => prev.filter((e) => e._id !== editingEntry._id));
+        setIsModalVisible(false);
+        setEditingEntry(null);
+        setNewEntryText("");
+        setNewEntryTitle("");
+      })
+      .catch((err) => {
+        console.error("Delete entry error:", err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   return (
     <>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -97,10 +117,13 @@ export const Journal = () => {
 
           <View style={styles.entriesContainer}>
             {entries?.length === 0 ? (
-              <Text style={theme.fonts.body}>No journal entries yet.</Text>
+              <Text style={theme.fonts.body}>
+                No journal entries yet. Start writing now!
+              </Text>
             ) : (
               entries?.map((entry) => (
                 <TouchableOpacity
+                  key={entry._id}
                   onPress={() => {
                     setEditingEntry(entry);
                     setNewEntryTitle(entry.title);
@@ -108,7 +131,7 @@ export const Journal = () => {
                     setIsModalVisible(true);
                   }}
                 >
-                  <Card key={entry._id} style={styles.card}>
+                  <Card style={styles.card}>
                     <Card.Title
                       title={entry.title}
                       titleStyle={theme.styles.cardTitle}
@@ -131,9 +154,24 @@ export const Journal = () => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={[theme.fonts.header, styles.modalHeader]}>
-              {editingEntry ? "Edit Entry" : "New Entry"}
-            </Text>
+            <View style={styles.modalHeaderContainer}>
+              <Text style={[theme.fonts.header, styles.modalHeader]}>
+                {editingEntry ? "Edit Entry" : "New Entry"}
+              </Text>
+
+              {editingEntry && (
+                <TouchableOpacity
+                  onPress={handleDeleteEntry}
+                  style={styles.deleteIconContainer}
+                  disabled={isLoading}
+                >
+                  <Image
+                    source={require("../assets/delete.png")}
+                    style={styles.deleteIcon}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
             <Text style={[theme.fonts.body, styles.label]}>Title</Text>
             <TextInput
               style={theme.styles.input}
@@ -217,5 +255,25 @@ const styles = StyleSheet.create({
   },
   buttonSpacing: {
     marginRight: 10,
+  },
+
+  modalHeaderContainer: {
+    position: "relative",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+
+  deleteIconContainer: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    padding: 8,
+    zIndex: 10,
+  },
+
+  deleteIcon: {
+    width: 24,
+    height: 24,
   },
 });

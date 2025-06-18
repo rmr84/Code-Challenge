@@ -55,3 +55,15 @@ export const updateEntryAPI = async (id, data) => {
       );
     });
 };
+
+export const deleteEntryAPI = async (id) => {
+  return await axios
+    .delete(`http://localhost:3000/api/entries/${id}`)
+    .then((response) => response)
+    .catch((error) => {
+      console.error(
+        "Delete entry error:",
+        error?.response?.data || error.message
+      );
+    });
+};
