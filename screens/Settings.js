@@ -16,9 +16,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Modal,
-  TextInput,
 } from "react-native";
-import { Card, Button } from "react-native-paper";
+import { Card, Button, TextInput, ActivityIndicator } from "react-native-paper";
 import { theme } from "../styles/theme";
 
 export const Settings = () => {
@@ -179,7 +178,7 @@ export const Settings = () => {
             <Text style={[theme.fonts.body, styles.modalBody]}>
               This will permanently delete your account and all of your data.
             </Text>
-            <View style={styles.modalButtons}>
+            <View style={theme.styles.modalButtons}>
               <Button
                 mode="contained"
                 loading={isLoading}
@@ -205,64 +204,83 @@ export const Settings = () => {
       <Modal
         visible={passwordModalVisible}
         transparent={true}
-        animationType="fade"
+        animationType="slide"
         onRequestClose={() => setPasswordModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={[theme.fonts.header, styles.modalHeader]}>
-              Change Password
+            <View style={styles.modalHeaderContainer}>
+              <Text style={[theme.fonts.header, styles.modalHeader]}>
+                Change Password
+              </Text>
+            </View>
+            <Text style={[theme.fonts.body, theme.styles.label]}>
+              Current Password
             </Text>
-
             <TextInput
-              mode="outlined"
-              label="Current Password"
+              style={theme.styles.input}
               value={currentPassword}
               onChangeText={setCurrentPassword}
-              secureTextEntry
-              style={theme.styles.input}
-            />
-
-            <TextInput
               mode="outlined"
-              label="New Password"
+            />
+            <Text style={[theme.fonts.body, theme.styles.label]}>
+              New Password
+            </Text>
+            <TextInput
+              style={[theme.styles.input, styles.textArea]}
               value={newPassword}
               onChangeText={setNewPassword}
-              secureTextEntry
-              style={theme.styles.input}
+              mode="outlined"
             />
 
+            <Text style={[theme.fonts.body, theme.styles.label]}>
+              Confirm New Password
+            </Text>
             <TextInput
-              mode="outlined"
-              label="Confirm New Password"
+              style={[theme.styles.input, styles.textArea]}
               value={confirmPassword}
               onChangeText={setConfirmPassword}
-              secureTextEntry
-              style={theme.styles.input}
+              mode="outlined"
             />
 
-            {passwordError ? (
-              <Text style={theme.fonts.error}>{passwordError}</Text>
-            ) : null}
-
-            <View style={styles.modalButtons}>
-              <Button
-                mode="contained"
-                loading={isLoading}
-                onPress={handleChangePassword}
-                style={[theme.styles.buttonPrimary, styles.button]}
+            <View style={theme.styles.modalButtons}>
+              <TouchableOpacity
+                onPress={() => {
+                  setPasswordModalVisible(false);
+                  setCurrentPassword("");
+                  setNewPassword("");
+                  setConfirmPassword("");
+                }}
               >
-                Update Password
-              </Button>
-              <Button
-                mode="contained"
-                disabled={isLoading}
-                onPress={() => setPasswordModalVisible(false)}
-                style={[theme.styles.buttonSecondary, styles.button]}
-              >
-                Cancel
-              </Button>
+                <Button
+                  mode={"contained"}
+                  style={theme.styles.buttonSecondary}
+                  labelStyle={theme.fonts.button}
+                >
+                  {isLoading ? (
+                    <ActivityIndicator animating={true} color="white" />
+                  ) : (
+                    "Cancel"
+                  )}
+                </Button>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleChangePassword}>
+                <Button
+                  mode={"contained"}
+                  style={theme.styles.buttonPrimary}
+                  labelStyle={theme.fonts.button}
+                >
+                  {isLoading ? (
+                    <ActivityIndicator animating={true} color="white" />
+                  ) : (
+                    "Save"
+                  )}
+                </Button>
+              </TouchableOpacity>
             </View>
+            {passwordError && (
+              <Text style={theme.fonts.error}>{passwordError}</Text>
+            )}
           </View>
         </View>
       </Modal>
@@ -295,6 +313,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
+
+  entriesContainer: {
+    marginTop: 30,
+    gap: 16,
+  },
+  card: {
+    backgroundColor: theme.colors.beige[200],
+    borderRadius: 12,
+    paddingVertical: 4,
+  },
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -308,17 +336,13 @@ const styles = StyleSheet.create({
   },
   modalHeader: {
     textAlign: "center",
-    marginBottom: 10,
+    marginBottom: 16,
   },
-  modalBody: {
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  modalButtons: {
-    flexDirection: "column",
-    gap: 10,
-  },
-  button: {
-    marginTop: 8,
+
+  modalHeaderContainer: {
+    position: "relative",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 10,
   },
 });
