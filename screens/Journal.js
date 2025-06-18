@@ -20,10 +20,6 @@ export const Journal = () => {
   const { user } = useUsers();
   const { entries, setEntries } = useEntries();
 
-  useEffect(() => {
-    console.log("entries: ", entries);
-  }, []);
-
   const handleAddEntry = () => {
     if (!newEntryTitle.trim() || !newEntryText.trim() || isLoading) return;
 
