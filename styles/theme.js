@@ -160,5 +160,10 @@ export const theme = {
       marginTop: 20,
       marginBottom: 4,
     },
+    modalButtons: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginTop: 20,
+    },
   },
 };
