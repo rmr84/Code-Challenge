@@ -14,13 +14,14 @@ export default function Authentication() {
     return auth.onAuthStateChanged((firebaseUser) => {
       if (firebaseUser) {
         if (firebaseUser?.emailVerified) {
-          try {
-            const response = getUsersAPI({ fb_token: firebaseUser?.uid });
-            setUser(response?.data);
-            navigation.navigate("Dashboard");
-          } catch (error) {
-            console.error("Error fetching user data:", error);
-          }
+          getUsersAPI({ fb_token: firebaseUser?.uid })
+            .then((response) => {
+              setUser(response?.data);
+              navigation.navigate("Dashboard");
+            })
+            .catch((error) => {
+              console.error("Error fetching user data:", error);
+            });
         }
       } else {
         setUser({});
