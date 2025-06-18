@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
 
   deleteIconContainer: {
     position: "absolute",
-    top: 0,
+    top: 5,
     right: 0,
     padding: 8,
     zIndex: 10,
