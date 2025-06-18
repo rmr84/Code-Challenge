@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { TextInput, Button, Card } from "react-native-paper";
 import { theme } from "../styles/theme";
-import { getEntriesAPI, createEntryAPI } from "../utils/api";
+import { createEntryAPI } from "../utils/api";
 import { useUsers } from "../context/UsersContext";
 import { useEntries } from "../context/EntriesContext";
 export const Journal = () => {
@@ -17,11 +17,17 @@ export const Journal = () => {
   const [newEntryTitle, setNewEntryTitle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [error, setError] = useState("");
   const { user } = useUsers();
   const { entries, setEntries } = useEntries();
 
   const handleAddEntry = () => {
-    if (!newEntryTitle.trim() || !newEntryText.trim() || isLoading) return;
+    if (isLoading) return;
+
+    if (!newEntryTitle.length > 0 || !newEntryText.length > 0) {
+      setError("Please enter a title and some content.");
+      return;
+    }
 
     setIsLoading(true);
 
@@ -46,6 +52,7 @@ export const Journal = () => {
         console.error("Error creating journal entry:", err);
       })
       .finally(() => {
+        setError("");
         setIsLoading(false);
       });
   };
@@ -138,6 +145,7 @@ export const Journal = () => {
                 </Button>
               </TouchableOpacity>
             </View>
+            {error && <Text style={theme.fonts.error}>{error}</Text>}
           </View>
         </View>
       </Modal>
