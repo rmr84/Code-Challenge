@@ -24,7 +24,7 @@ export const getUsersAPI = async (params) => {
 
 // JOURNAL ENTRIES
 
-// Post operation will create an entry in Mongo that has createdAt, updatedAt, _id, and userId
+// Post operation will create an entry in Mongo that has createdAt, updatedAt, _id, and userId, title, and body
 export const createEntryAPI = async (data) => {
   return await axios
     .post(`http://localhost:3000/api/entries`, data)
