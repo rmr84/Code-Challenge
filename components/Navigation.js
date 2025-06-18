@@ -6,10 +6,12 @@ import { SignIn } from "../screens/SignIn";
 import { OTP } from "../screens/OTP";
 import { Dashboard } from "../screens/Dashboard";
 import { ForgotPassword } from "../screens/ForgotPassword";
-
+import { BottomNavigation } from "./BottomNavigation";
 import Authentication from "./Authentication";
 const { Navigator, Screen } = createStackNavigator();
 export default function Navigation() {
+  const [currentScreen, setCurrentScreen] = useState("Dashboard");
+  const hideBottomNavScreens = ["SignIn", "SignUp", "OTP", "ForgotPassword"];
   return (
     <NavigationContainer>
       <Authentication />
@@ -20,6 +22,9 @@ export default function Navigation() {
         <Screen name={"Dashboard"} component={Dashboard} />
         <Screen name={"ForgotPassword"} component={ForgotPassword} />
       </Navigator>
+      {!hideBottomNavScreens.includes(currentScreen) && (
+        <BottomNavigation currentScreen={currentScreen} />
+      )}
     </NavigationContainer>
   );
 }
