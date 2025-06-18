@@ -58,15 +58,19 @@ export const SignUp = () => {
        
       }); */
 
-      if (response.status === 200) {
-        navigation.navigate("OTP", { credential: credential.user });
-        setError("");
-      } else {
-        setError("Failed to create user");
-      }
+      // if (response.status === 200) { TODO: Api
+      navigation.navigate("OTP", { credential: credential.user });
+      setError("");
+      // } else {
+      //   setError("Failed to create user");
+      // }
     } catch (error) {
       console.error(error.message);
-      setError("An error occurred while signing up");
+      if (error.code === "auth/email-already-in-use") {
+        setError("This email address is already in use");
+      } else {
+        setError("An error occurred while signing up");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -81,7 +85,11 @@ export const SignUp = () => {
       );
       return !!userCredential.user;
     } catch (error) {
-      if (error.code === "auth/user-not-found") {
+      console.log("error: ", error);
+      if (
+        error.code === "auth/user-not-found" || // firebase + expo 53 are not clear on which error is returned here
+        error.code === "auth/invalid-credential"
+      ) {
         return false;
       } else {
         return true;
@@ -183,10 +191,10 @@ export const SignUp = () => {
 };
 
 const styles = StyleSheet.create({
-    label: {
-        marginTop: 20,
-        marginBottom: 4,
-      },
+  label: {
+    marginTop: 20,
+    marginBottom: 4,
+  },
   accountRow: {
     flexDirection: "row",
     alignItems: "center",
