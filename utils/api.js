@@ -22,6 +22,18 @@ export const getUsersAPI = async (params) => {
     });
 };
 
+export const deleteUserAPI = async (id) => {
+  return await axios
+    .delete(`http://localhost:3000/api/users/${id}`)
+    .then((response) => response)
+    .catch((error) => {
+      console.error(
+        "Delete user error:",
+        error?.response?.data || error.message
+      );
+    });
+};
+
 // JOURNAL ENTRIES
 
 // Post operation will create an entry in Mongo that has createdAt, updatedAt, _id, and userId, title, and body
