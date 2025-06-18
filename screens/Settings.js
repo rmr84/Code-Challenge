@@ -185,7 +185,7 @@ export const Settings = () => {
                 onPress={handleDeleteAccount}
                 style={[theme.styles.buttonPrimary, styles.button]}
               >
-                Yes, Delete
+                Delete
               </Button>
               <Button
                 mode="contained"
