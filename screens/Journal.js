@@ -117,7 +117,7 @@ export const Journal = () => {
 
           <View style={styles.entriesContainer}>
             {entries?.length === 0 ? (
-              <Text style={theme.fonts.body}>
+              <Text style={[theme.fonts.subHeader, { textAlign: "center" }]}>
                 No journal entries yet. Start writing now!
               </Text>
             ) : (
