@@ -55,7 +55,7 @@ export const SignIn = () => {
           setError("Incorrect password. Please try again.");
           break;
         case "auth/invalid-credential":
-          setError("User not found.");
+          setError("Wrong e-mail or password. Please Try again.");
           break;
         default:
           setError(error.message);
@@ -121,7 +121,7 @@ export const SignIn = () => {
           </Button>
         </TouchableOpacity>
         <View style={styles.accountRow}>
-          <Text style={theme.fonts.caption}>Don’t have an account? </Text>
+          <Text style={theme.fonts.caption}>Don&apos;t have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
             <Text style={[theme.fonts.caption, styles.signupLink]}>
               Sign Up →
