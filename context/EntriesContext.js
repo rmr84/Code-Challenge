@@ -5,7 +5,7 @@ export const EntriesContext = createContext(null);
 export const useEntries = () => useContext(EntriesContext);
 
 export const EntriesProvider = ({ children }) => {
-  const [entries, setEntries] = useState({});
+  const [entries, setEntries] = useState([]);
 
   return (
     <EntriesContext.Provider
