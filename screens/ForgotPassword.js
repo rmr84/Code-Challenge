@@ -59,7 +59,9 @@ export const ForgotPassword = () => {
           Please enter your email below
         </Text>
 
-        <Text style={[theme.fonts.body, theme.styles.label]}>Email address</Text>
+        <Text style={[theme.fonts.body, theme.styles.label]}>
+          Email address
+        </Text>
         <TextInput
           style={theme.styles.input}
           value={email}
@@ -98,9 +100,4 @@ export const ForgotPassword = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  label: {
-    marginTop: 20,
-    marginBottom: 4,
-  },
-});
+const styles = StyleSheet.create({});
