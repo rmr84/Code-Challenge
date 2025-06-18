@@ -150,5 +150,11 @@ export const theme = {
       height: 200,
       borderRadius: 10,
     },
+    cardTitle: {
+      fontFamily: "Georgia",
+      fontWeight: "bold",
+      fontSize: 18,
+      color: "#3A3A3A",
+    },
   },
 };
