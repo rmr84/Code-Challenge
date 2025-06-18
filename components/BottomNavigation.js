@@ -17,7 +17,7 @@ export const BottomNavigation = ({ currentScreen }) => {
     {
       icon: require("../assets/journal.png"),
       screen: "Journal",
-      description: "My Journal",
+      description: "Journal",
     },
     {
       icon: require("../assets/settings.png"),
