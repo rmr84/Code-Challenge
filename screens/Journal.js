@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
-import { TextInput, Button, Card } from "react-native-paper";
+import { TextInput, Button, Card, ActivityIndicator } from "react-native-paper";
 import { theme } from "../styles/theme";
 import { createEntryAPI, updateEntryAPI, deleteEntryAPI } from "../utils/api";
 import { useUsers } from "../context/UsersContext";
@@ -107,11 +107,14 @@ export const Journal = () => {
           >
             <Button
               mode={"contained"}
-              loading={isLoading}
               style={theme.styles.buttonPrimary}
               labelStyle={theme.fonts.button}
             >
-              Add Entry
+              {isLoading ? (
+                <ActivityIndicator animating={true} color="white" />
+              ) : (
+                "Add Entry"
+              )}
             </Button>
           </TouchableOpacity>
 
@@ -189,25 +192,35 @@ export const Journal = () => {
               numberOfLines={10}
             />
 
-            <View style={styles.modalButtons}>
-              <TouchableOpacity onPress={handleSaveEntry}>
+            <View style={theme.styles.modalButtons}>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsModalVisible(false);
+                }}
+              >
                 <Button
                   mode={"contained"}
-                  loading={isLoading}
-                  style={theme.styles.buttonPrimary}
-                  labelStyle={theme.fonts.button}
-                >
-                  Save
-                </Button>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setIsModalVisible(false)}>
-                <Button
-                  mode={"contained"}
-                  loading={isLoading}
                   style={theme.styles.buttonSecondary}
                   labelStyle={theme.fonts.button}
                 >
-                  Cancel
+                  {isLoading ? (
+                    <ActivityIndicator animating={true} color="white" />
+                  ) : (
+                    "Cancel"
+                  )}
+                </Button>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleSaveEntry}>
+                <Button
+                  mode={"contained"}
+                  style={theme.styles.buttonPrimary}
+                  labelStyle={theme.fonts.button}
+                >
+                  {isLoading ? (
+                    <ActivityIndicator animating={true} color="white" />
+                  ) : (
+                    "Save"
+                  )}
                 </Button>
               </TouchableOpacity>
             </View>
@@ -252,9 +265,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 20,
-  },
-  buttonSpacing: {
-    marginRight: 10,
   },
 
   modalHeaderContainer: {
