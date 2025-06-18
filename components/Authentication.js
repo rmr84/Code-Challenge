@@ -2,9 +2,10 @@ import { useEffect } from "react";
 import { auth } from "../utils/firebase";
 import { useNavigation } from "@react-navigation/native";
 import { useUsers } from "../context/UsersContext";
+import { getUsersAPI } from "../utils/api";
 
 export default function Authentication() {
-  const { user, setUser } = useUsers();
+  const { setUser } = useUsers();
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -13,7 +14,13 @@ export default function Authentication() {
     return auth.onAuthStateChanged((firebaseUser) => {
       if (firebaseUser) {
         if (firebaseUser?.emailVerified) {
-          navigation.navigate("Dashboard");
+          try {
+            const response = getUsersAPI({ fb_token: firebaseUser?.uid });
+            setUser(response?.data);
+            navigation.navigate("Dashboard");
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+          }
         }
       } else {
         setUser({});
