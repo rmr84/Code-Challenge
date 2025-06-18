@@ -8,3 +8,12 @@ export const createUserAPI = async (data) => {
       console.error(JSON.stringify(error));
     });
 };
+
+export const getUsersAPI = async (params) => {
+  return await axios
+    .get(`http://localhost:3000/api/users`, { params })
+    .then((response) => response)
+    .catch((error) => {
+      console.error(JSON.stringify(error));
+    });
+};

@@ -11,9 +11,9 @@ import { useNavigation } from "@react-navigation/native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useUsers } from "../context/UsersContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { theme } from "../styles/theme";
 import { AnimatedRotatingText } from "../styles/AnimatedRotatingText";
+import { getUsersAPI } from "../utils/api";
 export const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,7 +37,8 @@ export const SignIn = () => {
       if (!firebaseUser.emailVerified) {
         setError("Please verify your email to login.");
       } else {
-        // TODO: Fetch user data and set it
+        const response = await getUsersAPI({ fb_token: firebaseUser.uid });
+        setUser(response.data);
         navigation.navigate("Dashboard");
       }
     } catch (error) {
@@ -69,9 +70,7 @@ export const SignIn = () => {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View style={theme.styles.container}>
-        <Text
-          style={[theme.fonts.header, theme.styles.centeredText]}
-        >
+        <Text style={[theme.fonts.header, theme.styles.centeredText]}>
           Sign In
         </Text>
 
