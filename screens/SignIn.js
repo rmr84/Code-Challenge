@@ -70,7 +70,7 @@ export const SignIn = () => {
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View style={theme.styles.container}>
         <Text
-          style={[theme.fonts.header, theme.styles.centeredText, styles.row]}
+          style={[theme.fonts.header, theme.styles.centeredText]}
         >
           Sign In
         </Text>
