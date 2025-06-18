@@ -156,5 +156,9 @@ export const theme = {
       fontSize: 18,
       color: "#3A3A3A",
     },
+    label: {
+      marginTop: 20,
+      marginBottom: 4,
+    },
   },
 };

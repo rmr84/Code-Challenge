@@ -3,7 +3,12 @@ import { auth } from "../utils/firebase";
 import { useUsers } from "../context/UsersContext";
 import { useEntries } from "../context/EntriesContext";
 import { deleteUserAPI } from "../utils/api";
-import { deleteUser } from "firebase/auth";
+import {
+  deleteUser,
+  reauthenticateWithCredential,
+  updatePassword,
+  EmailAuthProvider,
+} from "firebase/auth";
 import {
   ScrollView,
   View,
@@ -11,6 +16,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Modal,
+  TextInput,
 } from "react-native";
 import { Card, Button } from "react-native-paper";
 import { theme } from "../styles/theme";
@@ -20,6 +26,11 @@ export const Settings = () => {
   const { setEntries } = useEntries();
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordModalVisible, setPasswordModalVisible] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const handleSignOut = () => {
     auth
@@ -35,9 +46,9 @@ export const Settings = () => {
 
   const handleDeleteAccount = () => {
     if (!user?._id || !auth.currentUser) return;
-  
+
     setIsLoading(true);
-  
+
     deleteUserAPI(user._id)
       .then((response) => {
         if (response?.status === 200) {
@@ -62,7 +73,52 @@ export const Settings = () => {
         setDeleteModalVisible(false);
       });
   };
-  
+
+  const handleChangePassword = () => {
+    if (!auth.currentUser) return;
+
+    setIsLoading(true);
+    setPasswordError("");
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setPasswordError("Please fill out all fields.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError("New passwords do not match.");
+      setIsLoading(false);
+      return;
+    }
+
+    const credential = EmailAuthProvider.credential(
+      auth.currentUser.email,
+      currentPassword
+    );
+
+    reauthenticateWithCredential(auth.currentUser, credential)
+      .then(() => {
+        return updatePassword(auth.currentUser, newPassword)
+          .then(() => {
+            setPasswordModalVisible(false);
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
+          })
+          .catch((error) => {
+            console.error("Update password error:", error);
+            setPasswordError("Failed to update password. Try again.");
+          });
+      })
+      .catch((error) => {
+        console.error("Reauthentication error:", error);
+        setPasswordError("Current password is incorrect.");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -82,6 +138,19 @@ export const Settings = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
+          onPress={() => setPasswordModalVisible(true)}
+          style={styles.touchable}
+        >
+          <Card style={styles.card}>
+            <Card.Content>
+              <Text style={[theme.fonts.body, styles.signOutText]}>
+                Change Password
+              </Text>
+            </Card.Content>
+          </Card>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           onPress={() => setDeleteModalVisible(true)}
           style={styles.touchable}
         >
@@ -95,6 +164,7 @@ export const Settings = () => {
         </TouchableOpacity>
       </View>
 
+      {/* Delete account modal */}
       <Modal
         visible={deleteModalVisible}
         transparent={true}
@@ -122,6 +192,72 @@ export const Settings = () => {
                 mode="contained"
                 disabled={isLoading}
                 onPress={() => setDeleteModalVisible(false)}
+                style={[theme.styles.buttonSecondary, styles.button]}
+              >
+                Cancel
+              </Button>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Change password modal */}
+      <Modal
+        visible={passwordModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setPasswordModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={[theme.fonts.header, styles.modalHeader]}>
+              Change Password
+            </Text>
+
+            <TextInput
+              mode="outlined"
+              label="Current Password"
+              value={currentPassword}
+              onChangeText={setCurrentPassword}
+              secureTextEntry
+              style={theme.styles.input}
+            />
+
+            <TextInput
+              mode="outlined"
+              label="New Password"
+              value={newPassword}
+              onChangeText={setNewPassword}
+              secureTextEntry
+              style={theme.styles.input}
+            />
+
+            <TextInput
+              mode="outlined"
+              label="Confirm New Password"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry
+              style={theme.styles.input}
+            />
+
+            {passwordError ? (
+              <Text style={theme.fonts.error}>{passwordError}</Text>
+            ) : null}
+
+            <View style={styles.modalButtons}>
+              <Button
+                mode="contained"
+                loading={isLoading}
+                onPress={handleChangePassword}
+                style={[theme.styles.buttonPrimary, styles.button]}
+              >
+                Update Password
+              </Button>
+              <Button
+                mode="contained"
+                disabled={isLoading}
+                onPress={() => setPasswordModalVisible(false)}
                 style={[theme.styles.buttonSecondary, styles.button]}
               >
                 Cancel

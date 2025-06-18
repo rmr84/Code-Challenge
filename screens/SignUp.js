@@ -118,7 +118,7 @@ export const SignUp = () => {
           Sign Up
         </Text>
         <AnimatedRotatingText />
-        <Text style={[theme.fonts.body, styles.label]}>Email address</Text>
+        <Text style={[theme.fonts.body, theme.styles.label]}>Email address</Text>
         <TextInput
           style={theme.styles.input}
           value={email}
@@ -129,7 +129,7 @@ export const SignUp = () => {
           autoCapitalize="none"
         />
 
-        <Text style={[theme.fonts.body, styles.label]}>Create Password</Text>
+        <Text style={[theme.fonts.body, theme.styles.label]}>Create Password</Text>
         <TextInput
           style={theme.styles.input}
           value={password}
@@ -138,7 +138,7 @@ export const SignUp = () => {
           secureTextEntry
           autoComplete={"new-password"}
         />
-        <Text style={[theme.fonts.body, styles.label]}>
+        <Text style={[theme.fonts.body, theme.styles.label]}>
           Re-enter your password
         </Text>
         <TextInput
@@ -187,10 +187,6 @@ export const SignUp = () => {
 };
 
 const styles = StyleSheet.create({
-  label: {
-    marginTop: 20,
-    marginBottom: 4,
-  },
   accountRow: {
     flexDirection: "row",
     alignItems: "center",

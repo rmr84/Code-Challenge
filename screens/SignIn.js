@@ -75,7 +75,9 @@ export const SignIn = () => {
         </Text>
 
         <AnimatedRotatingText />
-        <Text style={[theme.fonts.body, styles.label]}>Email address</Text>
+        <Text style={[theme.fonts.body, theme.styles.label]}>
+          Email address
+        </Text>
         <TextInput
           style={theme.styles.input}
           value={email}
@@ -86,7 +88,7 @@ export const SignIn = () => {
           autoCapitalize="none"
         />
 
-        <Text style={[theme.fonts.body, styles.label]}>Password</Text>
+        <Text style={[theme.fonts.body, theme.styles.label]}>Password</Text>
         <TextInput
           style={theme.styles.input}
           value={password}
@@ -137,10 +139,6 @@ const styles = StyleSheet.create({
     marginTop: 75,
   },
 
-  label: {
-    marginTop: 20,
-    marginBottom: 4,
-  },
   bottomContainer: {
     marginTop: 40,
     gap: 16,

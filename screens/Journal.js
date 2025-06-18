@@ -172,14 +172,14 @@ export const Journal = () => {
                 </TouchableOpacity>
               )}
             </View>
-            <Text style={[theme.fonts.body, styles.label]}>Title</Text>
+            <Text style={[theme.fonts.body, theme.styles.label]}>Title</Text>
             <TextInput
               style={theme.styles.input}
               value={newEntryTitle}
               onChangeText={setNewEntryTitle}
               mode="outlined"
             />
-            <Text style={[theme.fonts.body, styles.label]}>Content</Text>
+            <Text style={[theme.fonts.body, theme.styles.label]}>Content</Text>
             <TextInput
               style={[theme.styles.input, styles.textArea]}
               value={newEntryText}

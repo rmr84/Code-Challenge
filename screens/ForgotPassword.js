@@ -55,11 +55,11 @@ export const ForgotPassword = () => {
         <Text style={[theme.fonts.header, theme.styles.centeredText]}>
           RESET PASSWORD
         </Text>
-        <Text style={[theme.fonts.body, styles.label]}>
+        <Text style={[theme.fonts.body, theme.styles.label]}>
           Please enter your email below
         </Text>
 
-        <Text style={[theme.fonts.body, styles.label]}>Email address</Text>
+        <Text style={[theme.fonts.body, theme.styles.label]}>Email address</Text>
         <TextInput
           style={theme.styles.input}
           value={email}
