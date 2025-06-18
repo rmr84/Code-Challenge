@@ -83,6 +83,7 @@ export const theme = {
       fontFamily: "System",
       fontSize: 16,
       color: "#5CB85C",
+      marginTop: 15,
     },
   },
   styles: {
