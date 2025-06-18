@@ -1,6 +1,6 @@
 export const openers = [
-    "Every day's story starts here. Ready to write yours?",
+    "Every day's story starts here.",
     "Catch your thoughts before they fly away.",
-    "Ready to spill some thoughts? Your journal’s all ears",
+    "Ready to spill the beans?",
     "Pause. Reflect. Write.",
 ]
