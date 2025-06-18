@@ -104,7 +104,7 @@ export const theme = {
       elevation: 3,
     },
     input: {
-      borderColor: "#DDD1C8",
+      borderColor: "#FAF9F6",
       borderWidth: 1,
       borderRadius: 8,
       fontSize: 16,
@@ -128,7 +128,8 @@ export const theme = {
       paddingHorizontal: 24,
       borderRadius: 8,
       alignItems: "center",
-      marginTop: 12,
+      marginTop: 25,
+      fontSize: 25,
     },
     logo: {
       width: 40,
