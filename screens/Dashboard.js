@@ -76,54 +76,60 @@ export const Dashboard = () => {
                 <Text style={[theme.fonts.subHeader, { marginBottom: 6 }]}>
                   {day}
                 </Text>
-                <Card style={styles.card}>
-                  <Card.Content>
-                    {moods ? (
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          flexWrap: "wrap",
-                          gap: 8,
-                        }}
-                      >
-                        {Object.entries(moods).map(([mood, value]) => {
-                          const normalized = Math.min(value / 100, 1);
-                          const bgColor = `rgba(132, 186, 205, ${
-                            normalized * 0.85
-                          })`;
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("Journal")}
+                >
+                  <Card style={styles.card}>
+                    <Card.Content>
+                      {moods ? (
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            flexWrap: "wrap",
+                            gap: 8,
+                          }}
+                        >
+                          {Object.entries(moods).map(([mood, value]) => {
+                            const normalized = Math.min(value / 100, 1);
+                            const bgColor = `rgba(132, 186, 205, ${
+                              normalized * 0.85
+                            })`;
 
-                          return (
-                            <View
-                              key={mood}
-                              style={{
-                                paddingVertical: 4,
-                                paddingHorizontal: 8,
-                                borderRadius: 12,
-                                backgroundColor: bgColor,
-                                marginRight: 6,
-                                marginBottom: 6,
-                              }}
-                            >
-                              <Text style={{ fontSize: 12, color: "#004d40" }}>
-                                {mood}: {Math.round(value)}%
-                              </Text>
-                            </View>
-                          );
-                        })}
-                      </View>
-                    ) : (
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          fontStyle: "italic",
-                          color: "#888",
-                        }}
-                      >
-                        No journal entries for this day
-                      </Text>
-                    )}
-                  </Card.Content>
-                </Card>
+                            return (
+                              <View
+                                key={mood}
+                                style={{
+                                  paddingVertical: 4,
+                                  paddingHorizontal: 8,
+                                  borderRadius: 12,
+                                  backgroundColor: bgColor,
+                                  marginRight: 6,
+                                  marginBottom: 6,
+                                }}
+                              >
+                                <Text
+                                  style={{ fontSize: 12, color: "#004d40" }}
+                                >
+                                  {mood}: {Math.round(value)}%
+                                </Text>
+                              </View>
+                            );
+                          })}
+                        </View>
+                      ) : (
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontStyle: "italic",
+                            color: "#888",
+                          }}
+                        >
+                          No journal entries for this day
+                        </Text>
+                      )}
+                    </Card.Content>
+                  </Card>
+                </TouchableOpacity>
               </View>
             );
           })
