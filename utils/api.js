@@ -5,7 +5,7 @@ import axios from "axios";
 // Post operation will create an entry in Mongo that has createdAt, updatedAt, _id, and firebaseId
 export const createUserAPI = async (data) => {
   return await axios
-    .post(`http://localhost:3000/api/users`, data)
+    .post(`${process.env.EXPO_PUBLIC_API}/users`, data)
     .then((response) => response)
     .catch((error) => {
       console.error(JSON.stringify(error));
@@ -15,7 +15,7 @@ export const createUserAPI = async (data) => {
 // Can query by the firebase id (uid)
 export const getUsersAPI = async (params) => {
   return await axios
-    .get(`http://localhost:3000/api/users`, { params })
+    .get(`${process.env.EXPO_PUBLIC_API}/users`, { params })
     .then((response) => response)
     .catch((error) => {
       console.error(JSON.stringify(error));
@@ -24,7 +24,7 @@ export const getUsersAPI = async (params) => {
 
 export const deleteUserAPI = async (id) => {
   return await axios
-    .delete(`http://localhost:3000/api/users/${id}`)
+    .delete(`${process.env.EXPO_PUBLIC_API}users/${id}`)
     .then((response) => response)
     .catch((error) => {
       console.error(
@@ -39,7 +39,7 @@ export const deleteUserAPI = async (id) => {
 // Post operation will create an entry in Mongo that has createdAt, updatedAt, _id, and userId, title, and body
 export const createEntryAPI = async (data) => {
   return await axios
-    .post(`http://localhost:3000/api/entries`, data)
+    .post(`${process.env.EXPO_PUBLIC_API}/entries`, data)
     .then((response) => response)
     .catch((error) => {
       console.error(JSON.stringify(error));
@@ -49,7 +49,7 @@ export const createEntryAPI = async (data) => {
 // Can query by the user's id that is on the entry object to match journal entries to a user
 export const getEntriesAPI = async (params) => {
   return await axios
-    .get(`http://localhost:3000/api/entries`, { params })
+    .get(`${process.env.EXPO_PUBLIC_API}/entries`, { params })
     .then((response) => response)
     .catch((error) => {
       console.error(JSON.stringify(error));
@@ -58,7 +58,7 @@ export const getEntriesAPI = async (params) => {
 
 export const updateEntryAPI = async (id, data) => {
   return await axios
-    .patch(`http://localhost:3000/api/entries/${id}`, data)
+    .patch(`${process.env.EXPO_PUBLIC_API}/entries/${id}`, data)
     .then((response) => response)
     .catch((error) => {
       console.error(
@@ -70,7 +70,7 @@ export const updateEntryAPI = async (id, data) => {
 
 export const deleteEntryAPI = async (id) => {
   return await axios
-    .delete(`http://localhost:3000/api/entries/${id}`)
+    .delete(`${process.env.EXPO_PUBLIC_API}/entries/${id}`)
     .then((response) => response)
     .catch((error) => {
       console.error(
