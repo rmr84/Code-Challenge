@@ -55,7 +55,7 @@ export const SignUp = () => {
         email,
       });
       if (response.status === 200) {
-        navigation.navigate("OTP", { credential: credential.user });
+        navigation.navigate("VerifyEmail", { credential: credential.user });
         setError("");
       } else {
         setError("Failed to create user");

@@ -11,7 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 import { sendEmailVerification } from "firebase/auth";
 import { useState } from "react";
 
-export const OTP = ({ route }) => {
+export const VerifyEmail = ({ route }) => {
   const { credential } = route.params;
   const navigation = useNavigation();
   const [error, setError] = useState("");
