@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,21 +8,33 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
-import { TextInput, Button, Card, ActivityIndicator } from "react-native-paper";
+import {
+  TextInput,
+  Button,
+  Card,
+  ActivityIndicator,
+  IconButton,
+} from "react-native-paper";
 import { theme } from "../styles/theme";
 import { createEntryAPI, updateEntryAPI, deleteEntryAPI } from "../utils/api";
 import { useUsers } from "../context/UsersContext";
 import { useEntries } from "../context/EntriesContext";
 import filterIcon from "../assets/filters.png";
+import { useFilters } from "../context/FiltersContext";
+import { moods } from "../utils/constants";
 export const Journal = () => {
   const [newEntryText, setNewEntryText] = useState("");
   const [newEntryTitle, setNewEntryTitle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEntryModalVisible, setIsEntryModalVisible] = useState(false);
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [error, setError] = useState("");
   const [editingEntry, setEditingEntry] = useState(null);
   const { user } = useUsers();
   const { entries, setEntries } = useEntries();
+  const { moodFilter, setMoodFilter } = useFilters();
+  const [selectedMood, setSelectedMood] = useState(null);
+  const [selectedLevel, setSelectedLevel] = useState(null);
 
   const handleSaveEntry = () => {
     if (isLoading) return;
@@ -57,7 +69,7 @@ export const Journal = () => {
           setNewEntryText("");
           setNewEntryTitle("");
           setEditingEntry(null);
-          setIsModalVisible(false);
+          setIsEntryModalVisible(false);
         } else {
           console.error("No data returned");
         }
@@ -77,7 +89,7 @@ export const Journal = () => {
     deleteEntryAPI(editingEntry._id)
       .then(() => {
         setEntries((prev) => prev.filter((e) => e._id !== editingEntry._id));
-        setIsModalVisible(false);
+        setIsEntryModalVisible(false);
         setEditingEntry(null);
         setNewEntryText("");
         setNewEntryTitle("");
@@ -90,21 +102,50 @@ export const Journal = () => {
       });
   };
 
+  const getMoodLevel = (value) => {
+    if (value >= 51) return "High";
+    if (value >= 26) return "Medium";
+    return "Low";
+  };
+
   return (
     <>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={theme.styles.container}>
           <View style={styles.headerRow}>
             <Text style={theme.fonts.header}>My Journal</Text>
-            <TouchableOpacity onPress={() => console.log("Filter pressed!")}>
+            <TouchableOpacity onPress={() => setIsFilterModalVisible(true)}>
               <Image source={filterIcon} style={styles.filterIcon} />
             </TouchableOpacity>
           </View>
 
+          {moodFilter.length > 0 && (
+            <View style={styles.filterTagContainer}>
+              {moodFilter.map(({ type, level }) => (
+                <View key={`${type}-${level}`} style={styles.filterTag}>
+                  <Text style={styles.filterTagText}>
+                    {type.charAt(0).toUpperCase() + type.slice(1)} ({level})
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() =>
+                      setMoodFilter((prev) =>
+                        prev.filter(
+                          (f) => !(f.type === type && f.level === level)
+                        )
+                      )
+                    }
+                  >
+                    <Text style={styles.filterTagClose}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+          )}
+
           <TouchableOpacity
             onPress={() => {
               setEditingEntry(null);
-              setIsModalVisible(true);
+              setIsEntryModalVisible(true);
               setNewEntryText("");
               setNewEntryTitle("");
             }}
@@ -128,83 +169,93 @@ export const Journal = () => {
                 No journal entries yet. Start writing now!
               </Text>
             ) : (
-              entries?.map((entry) => {
-                const created = new Date(entry.createdAt);
-                const updated = new Date(entry.updatedAt);
-                const newerDate = updated > created ? updated : created;
+              entries
+                ?.filter((entry) => {
+                  if (!moodFilter.length) return true;
+                  return moodFilter.some(({ type, level }) => {
+                    const moodValue = entry.mood?.[type];
+                    if (moodValue == null) return false;
+                    return getMoodLevel(moodValue) === level;
+                  });
+                })
+                .map((entry) => {
+                  const created = new Date(entry.createdAt);
+                  const updated = new Date(entry.updatedAt);
+                  const newerDate = updated > created ? updated : created;
 
-                const formattedDate = newerDate.toLocaleDateString();
+                  const formattedDate = newerDate.toLocaleDateString();
 
-                return (
-                  <TouchableOpacity
-                    key={entry._id}
-                    onPress={() => {
-                      setEditingEntry(entry);
-                      setNewEntryTitle(entry.title);
-                      setNewEntryText(entry.body);
-                      setIsModalVisible(true);
-                    }}
-                  >
-                    <Card style={styles.card}>
-                      <Card.Title
-                        title={entry.title}
-                        titleStyle={theme.styles.cardTitle}
-                        right={() => (
-                          <Text
-                            style={{
-                              marginRight: 12,
-                              fontSize: 12,
-                              color: theme.colors.brown[700],
-                              alignSelf: "center",
-                            }}
-                          >
-                            {formattedDate}
-                          </Text>
-                        )}
-                      />
-                      <Card.Content>
-                        <Text style={theme.fonts.body}>{entry.body}</Text>
-                        {entry.mood && (
-                          <View style={styles.moodContainer}>
-                            {Object.entries(entry.mood).map(([key, val]) => {
-                              const value = typeof val === "number" ? val : 0;
-                              const normalized = Math.min(value / 100, 1);
+                  return (
+                    <TouchableOpacity
+                      key={entry._id}
+                      onPress={() => {
+                        setEditingEntry(entry);
+                        setNewEntryTitle(entry.title);
+                        setNewEntryText(entry.body);
+                        setIsEntryModalVisible(true);
+                      }}
+                    >
+                      <Card style={styles.card}>
+                        <Card.Title
+                          title={entry.title}
+                          titleStyle={theme.styles.cardTitle}
+                          right={() => (
+                            <Text
+                              style={{
+                                marginRight: 12,
+                                fontSize: 12,
+                                color: theme.colors.brown[700],
+                                alignSelf: "center",
+                              }}
+                            >
+                              {formattedDate}
+                            </Text>
+                          )}
+                        />
+                        <Card.Content>
+                          <Text style={theme.fonts.body}>{entry.body}</Text>
+                          {entry.mood && (
+                            <View style={styles.moodContainer}>
+                              {Object.entries(entry.mood).map(([key, val]) => {
+                                const value = typeof val === "number" ? val : 0;
+                                const normalized = Math.min(value / 100, 1);
+                                const bgColor = `rgba(132, 186, 205, ${
+                                  normalized * 0.85
+                                })`;
 
-                              const bgColor = `rgba(132, 186, 205, ${
-                                normalized * 0.85
-                              })`;
-
-                              return (
-                                <View
-                                  key={key}
-                                  style={[
-                                    styles.moodBadge,
-                                    { backgroundColor: bgColor },
-                                  ]}
-                                >
-                                  <Text style={styles.moodText}>
-                                    {key.charAt(0).toUpperCase() + key.slice(1)}
-                                    : {Math.round(value)}%
-                                  </Text>
-                                </View>
-                              );
-                            })}
-                          </View>
-                        )}
-                      </Card.Content>
-                    </Card>
-                  </TouchableOpacity>
-                );
-              })
+                                return (
+                                  <View
+                                    key={key}
+                                    style={[
+                                      styles.moodBadge,
+                                      { backgroundColor: bgColor },
+                                    ]}
+                                  >
+                                    <Text style={styles.moodText}>
+                                      {key.charAt(0).toUpperCase() +
+                                        key.slice(1)}
+                                      : {Math.round(value)}%
+                                    </Text>
+                                  </View>
+                                );
+                              })}
+                            </View>
+                          )}
+                        </Card.Content>
+                      </Card>
+                    </TouchableOpacity>
+                  );
+                })
             )}
           </View>
         </View>
       </ScrollView>
+      {/* Entry modal */}
       <Modal
-        visible={isModalVisible}
+        visible={isEntryModalVisible}
         transparent={true}
         animationType="slide"
-        onRequestClose={() => setIsModalVisible(false)}
+        onRequestClose={() => setIsEntryModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
@@ -212,6 +263,14 @@ export const Journal = () => {
               <Text style={[theme.fonts.header, styles.modalHeader]}>
                 {editingEntry ? "Edit Entry" : "New Entry"}
               </Text>
+              {!editingEntry && (
+                <IconButton
+                  icon="close"
+                  size={24}
+                  onPress={() => setIsEntryModalVisible(false)}
+                  style={styles.closeButton}
+                />
+              )}
 
               {editingEntry && (
                 <TouchableOpacity
@@ -246,7 +305,7 @@ export const Journal = () => {
             <View style={theme.styles.modalButtons}>
               <TouchableOpacity
                 onPress={() => {
-                  setIsModalVisible(false);
+                  setIsEntryModalVisible(false);
                 }}
               >
                 <Button
@@ -276,6 +335,123 @@ export const Journal = () => {
               </TouchableOpacity>
             </View>
             {error && <Text style={theme.fonts.error}>{error}</Text>}
+          </View>
+        </View>
+      </Modal>
+      {/* Filter modal */}
+      <Modal
+        visible={isFilterModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => {
+          setIsFilterModalVisible(false);
+          setSelectedMood(null);
+          setSelectedLevel(null);
+        }}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={[theme.fonts.header, { marginBottom: 16 }]}>
+              Filter Journal Entries
+            </Text>
+
+            <TouchableOpacity style={styles.closeButton}>
+              <IconButton
+                icon="close"
+                size={24}
+                onPress={() => setIsFilterModalVisible(false)}
+                style={styles.closeButton}
+              />
+            </TouchableOpacity>
+
+            <Text style={theme.fonts.body}>Select Mood</Text>
+            <View style={styles.filterButtonRow}>
+              {moods.map((mood) => (
+                <Button
+                  key={mood}
+                  mode={selectedMood === mood ? "contained" : "outlined"}
+                  onPress={() => setSelectedMood(mood)}
+                  disabled={selectedLevel && selectedMood !== mood}
+                  style={{ marginRight: 8, marginTop: 8 }}
+                >
+                  {mood.charAt(0).toUpperCase() + mood.slice(1)}
+                </Button>
+              ))}
+            </View>
+
+            <Text style={[theme.fonts.body, { marginTop: 16 }]}>
+              Select Level
+            </Text>
+            <View style={styles.filterButtonRow}>
+              {["Low", "Medium", "High"].map((level) => {
+                const alreadyExists = moodFilter.some(
+                  (f) =>
+                    f.type === selectedMood?.toLowerCase() && f.level === level
+                );
+
+                return (
+                  <Button
+                    key={level}
+                    mode={selectedLevel === level ? "contained" : "outlined"}
+                    onPress={() => {
+                      if (selectedMood) setSelectedLevel(level);
+                    }}
+                    disabled={!selectedMood || alreadyExists}
+                    style={{ marginRight: 8, marginTop: 8 }}
+                  >
+                    {level}
+                  </Button>
+                );
+              })}
+            </View>
+
+            <View style={[theme.styles.modalButtons, { marginTop: 24 }]}>
+              <TouchableOpacity>
+                <Button
+                  mode={"contained"}
+                  onPress={() => {
+                    setMoodFilter([]);
+                    setSelectedMood(null);
+                    setSelectedLevel(null);
+                    setIsFilterModalVisible(false);
+                  }}
+                  style={theme.styles.buttonSecondary}
+                  labelStyle={theme.fonts.button}
+                >
+                  Clear
+                </Button>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Button
+                  mode="contained"
+                  onPress={() => {
+                    const alreadyExists = moodFilter.some(
+                      (f) =>
+                        f.type === selectedMood && f.level === selectedLevel
+                    );
+
+                    if (!alreadyExists) {
+                      setMoodFilter((prev) => [
+                        ...prev,
+                        {
+                          type: selectedMood.toLowerCase(),
+                          level: selectedLevel,
+                        },
+                      ]);
+                    }
+
+                    setSelectedMood(null);
+                    setSelectedLevel(null);
+                    setIsFilterModalVisible(false);
+                  }}
+                  style={theme.styles.buttonPrimary}
+                  labelStyle={theme.fonts.button}
+                  disabled={!selectedMood || !selectedLevel}
+                >
+                  Apply
+                </Button>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -372,5 +548,46 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     marginLeft: 12,
+  },
+
+  filterButtonRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 4,
+  },
+
+  filterTagContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+
+  filterTag: {
+    flexDirection: "row",
+    backgroundColor: theme.colors.blue[100],
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 16,
+    alignItems: "center",
+  },
+
+  filterTagText: {
+    fontSize: 12,
+    marginRight: 6,
+    color: theme.colors.blue[800],
+    fontWeight: "bold",
+  },
+
+  filterTagClose: {
+    fontSize: 12,
+    color: theme.colors.blue[900],
+    fontWeight: "bold",
+  },
+  closeButton: {
+    position: "absolute",
+    right: 0,
+    top: 0,
   },
 });

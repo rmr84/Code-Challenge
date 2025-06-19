@@ -5,13 +5,13 @@ export const FiltersContext = createContext(null);
 export const useFilters = () => useContext(FiltersContext);
 
 export const FiltersProvider = ({ children }) => {
-  const [filters, setFilters] = useState([]);
+  const [moodFilter, setMoodFilter] = useState([]);
 
   return (
     <FiltersContext.Provider
       value={{
-        filters,
-        setFilters,
+        moodFilter,
+        setMoodFilter,
       }}
     >
       {children}
