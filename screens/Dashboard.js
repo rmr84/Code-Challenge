@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   TouchableOpacity,
   ScrollView,
 } from "react-native";
@@ -98,32 +97,21 @@ export const Dashboard = () => {
                             return (
                               <View
                                 key={mood}
-                                style={{
-                                  paddingVertical: 4,
-                                  paddingHorizontal: 8,
-                                  borderRadius: 12,
-                                  backgroundColor: bgColor,
-                                  marginRight: 6,
-                                  marginBottom: 6,
-                                }}
+                                style={[
+                                  styles.moodView,
+                                  { backgroundColor: bgColor },
+                                ]}
                               >
-                                <Text
-                                  style={{ fontSize: 12, color: "#004d40" }}
-                                >
-                                  {mood}: {Math.round(value)}%
+                                <Text style={styles.tagTextStyle}>
+                                  {mood.charAt(0).toUpperCase() + mood.slice(1)}
+                                  : {Math.round(value)}%
                                 </Text>
                               </View>
                             );
                           })}
                         </View>
                       ) : (
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            fontStyle: "italic",
-                            color: "#888",
-                          }}
-                        >
+                        <Text style={styles.noDataText}>
                           No journal entries for this day
                         </Text>
                       )}
@@ -211,5 +199,21 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#666",
     fontWeight: "bold",
+  },
+  tagTextStyle: {
+    fontSize: 12,
+    color: "#004d40",
+  },
+  noDataText: {
+    fontSize: 12,
+    fontStyle: "italic",
+    color: "#888",
+  },
+  moodView: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    marginRight: 6,
+    marginBottom: 6,
   },
 });
