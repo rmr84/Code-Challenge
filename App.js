@@ -1,5 +1,6 @@
 import { UsersProvider } from "./context/UsersContext";
 import { EntriesProvider } from "./context/EntriesContext";
+import { FiltersProvider } from "./context/FiltersContext";
 import Navigation from "./components/Navigation";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { theme } from "./styles/theme";
@@ -21,11 +22,13 @@ export default function App() {
     <>
       <PaperProvider theme={paperTheme}>
         <UsersProvider>
-          <EntriesProvider>
-            <SafeAreaProvider>
-              <Navigation />
-            </SafeAreaProvider>
-          </EntriesProvider>
+          <FiltersProvider>
+            <EntriesProvider>
+              <SafeAreaProvider>
+                <Navigation />
+              </SafeAreaProvider>
+            </EntriesProvider>
+          </FiltersProvider>
         </UsersProvider>
       </PaperProvider>
     </>

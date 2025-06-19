@@ -13,6 +13,7 @@ import { theme } from "../styles/theme";
 import { createEntryAPI, updateEntryAPI, deleteEntryAPI } from "../utils/api";
 import { useUsers } from "../context/UsersContext";
 import { useEntries } from "../context/EntriesContext";
+import filterIcon from "../assets/filters.png";
 export const Journal = () => {
   const [newEntryText, setNewEntryText] = useState("");
   const [newEntryTitle, setNewEntryTitle] = useState("");
@@ -88,15 +89,17 @@ export const Journal = () => {
         setIsLoading(false);
       });
   };
-  const formatMoodValue = (val) =>
-    typeof val === "number" ? val.toFixed(2) : "N/A";
+
   return (
     <>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={theme.styles.container}>
-          <Text style={[theme.fonts.header, theme.styles.centeredText]}>
-            My Journal
-          </Text>
+          <View style={styles.headerRow}>
+            <Text style={theme.fonts.header}>My Journal</Text>
+            <TouchableOpacity onPress={() => console.log("Filter pressed!")}>
+              <Image source={filterIcon} style={styles.filterIcon} />
+            </TouchableOpacity>
+          </View>
 
           <TouchableOpacity
             onPress={() => {
@@ -354,5 +357,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#004d40",
     fontWeight: "600",
+  },
+
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 16,
+    marginTop: 75,
+    marginRight: 10,
+  },
+
+  filterIcon: {
+    width: 24,
+    height: 24,
+    marginLeft: 12,
   },
 });

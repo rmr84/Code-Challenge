@@ -4,7 +4,7 @@ export const FiltersContext = createContext(null);
 
 export const useFilters = () => useContext(FiltersContext);
 
-export const EntriesProvider = ({ children }) => {
+export const FiltersProvider = ({ children }) => {
   const [filters, setFilters] = useState([]);
 
   return (
