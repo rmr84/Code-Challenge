@@ -14,3 +14,16 @@ export const weekDays = [
   "Saturday",
   "Sunday",
 ];
+
+export const moods = [
+  "Happiness",
+  "Fear",
+  "Sadness",
+  "Anger",
+  "Love",
+  "Anxiety",
+  "Confusion",
+  "Surprise",
+  "Excitement",
+  "Calm",
+];
