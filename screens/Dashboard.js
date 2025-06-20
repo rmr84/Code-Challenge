@@ -55,7 +55,10 @@ export const Dashboard = () => {
   }, [entries]);
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={theme.styles.container}>
         <Text style={[theme.fonts.header, theme.styles.centeredText]}>
           Daily Average Scores
