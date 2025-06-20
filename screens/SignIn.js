@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -21,6 +22,14 @@ export const SignIn = () => {
   const [error, setError] = useState("");
   const navigation = useNavigation();
   const { setUser } = useUsers();
+
+  useFocusEffect(
+    useCallback(() => {
+      setEmail("");
+      setPassword("");
+      setError("");
+    }, [])
+  );
 
   const handleSignIn = async () => {
     if (isLoading) return;
